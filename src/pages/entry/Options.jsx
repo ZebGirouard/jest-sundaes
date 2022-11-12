@@ -10,13 +10,20 @@ import { formatCurrency } from "../../utilities";
 export const Options = ({ optionType }) => {
   const [items, setItems] = useState([]);
   const [error, setError] = useState(false);
-  const [orderDetails, updateItemCount] = useOrderDetails();
+  const { orderDetails, updateItemCount } = useOrderDetails();
 
   useEffect(() => {
+    let isRendered = true;
     axios
       .get(`http://localhost:3030/${optionType}`)
-      .then((res) => setItems(res.data))
+      .then((res) => {
+        if (isRendered) setItems(res.data);
+      })
       .catch((err) => setError(true));
+
+    return () => {
+      isRendered = false;
+    };
   }, [optionType]);
   const ItemComponent = optionType === "scoops" ? ScoopOption : ToppingOption;
   const title = optionType[0].toUpperCase() + optionType.slice(1).toLowerCase();

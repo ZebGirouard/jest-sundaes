@@ -48,50 +48,29 @@ export const OrderDetailsProvider = (props) => {
     });
   }, [optionCounts]);
   const value = useMemo(() => {
+    const clearOrder = () => {
+      setOptionCounts({
+        scoops: new Map(),
+        toppings: new Map(),
+      });
+    };
     const updateItemCount = (itemName, newItemCount, optionType) => {
       const newOptionCounts = { ...optionCounts };
 
       const optionCountsMap = optionCounts[optionType];
       optionCountsMap.set(itemName, parseInt(newItemCount));
-
       setOptionCounts(newOptionCounts);
     };
 
-    return [
-      {
+    return {
+      orderDetails: {
         ...optionCounts,
         totals,
       },
       updateItemCount,
-    ];
-  }, [optionCounts, totals]);
+      clearOrder,
+    };
+  }, [optionCounts, totals, zeroCurrency]);
 
   return <OrderDetails.Provider value={value} {...props} />;
-  //   const [scoops, setScoops] = useState([]);
-  //   const [toppings, setToppings] = useState([]);
-  //   const [subtotal, setSubtotal] = useState(0);
-  //   const [tax, setTax] = useState(0);
-  //   const [total, setTotal] = useState(0);
-
-  //   const subtotalWithTax = useMemo(() => subtotal + tax, [subtotal, tax]);
-
-  //   return (
-  //     <OrderDetails.Provider
-  //       value={{
-  //         scoops,
-  //         setScoops,
-  //         toppings,
-  //         setToppings,
-  //         subtotal,
-  //         setSubtotal,
-  //         tax,
-  //         setTax,
-  //         total,
-  //         setTotal,
-  //         subtotalWithTax,
-  //       }}
-  //     >
-  //       {children}
-  //     </OrderDetails.Provider>
-  //   );
 };
